@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 pandas = "*"
 ipykernel = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.8"
