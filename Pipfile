@@ -9,6 +9,8 @@ verify_ssl = true
 pandas = "*"
 ipykernel = "*"
 numpy = "*"
+matplotlib = "*"
+streamlit = "==0.69"
 
 [requires]
 python_version = "3.8"
