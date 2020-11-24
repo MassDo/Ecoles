@@ -1,1 +1,1 @@
-streamlit run ecoles.py
+web: sh setup.sh &&streamlit run ecoles.py
