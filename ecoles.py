@@ -5,30 +5,29 @@ import pandas as pd
 import pydeck as pdk
 
 #LOADING DATA
-ECOLE_DATA = 'https://raw.githubusercontent.com/MassDo/test/main/ecoles_data.csv'
-
+ECOLES_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/ecoles_data.csv'
+ECOLE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/ecole.csv'
+COLLEGE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/college.csv'
+LYCEE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/lycee.csv'
 
 @st.cache
-def load_data():
-    data = pd.read_csv(ECOLE_DATA).dropna()
-    # data.to_csv('./ec.csv', index=False)
-    # data = pd.read_csv('./ec.csv') 
-    # data = data.to_dict('records')
+def load_data(url):
+    df = pd.read_csv(url)
+    return df
+
+@st.cache
+def filter_data(df, county):
+    data = pd.DataFrame()
+    frames = []
+    for c in county:
+        if len(c) == 1:
+            c = "0" + c
+        frames.append(df[df['Code_departement'] == str(c)])
+        data = pd.concat(frames)
     return data
 
-
-"""
-    # Visualisations des écoles en France, données publiques
-"""
-
-if st.checkbox('see data ? ⬇️'):
-    data
-    f"""### Vous pouvez trouvez la source des données [ici]({ECOLE_DATA})""" 
-
-
 # LAYER 
-def map(data):
-    f"""**Infos**: chaque colonne fait {radius*2}m de largeur !"""
+def mapp(data):    
     # Set the viewport location
     view_state = pdk.ViewState(
         longitude=2.415,
@@ -37,15 +36,15 @@ def map(data):
         min_zoom=1,
         max_zoom=20,
         pitch=40.5,
-        bearing=-27.36,)
-    
+        bearing=-27.36,
+    )    
     # Define a layer to display on a map
     ecoles=pdk.Layer(
         "HexagonLayer",
         data,
         get_position=["longitude", "latitude"],
         #get_position=["longitude", "latitude"],
-        auto_highlight=False,
+        auto_highlight=True,
         elevation_scale=hauteur,
         pickable=True,
         elevation_range=[0, 2000],
@@ -54,35 +53,64 @@ def map(data):
         radius= radius,
         opacity=opacity
     )
-
     st.pydeck_chart(pdk.Deck(
         layers=[ecoles],
         initial_view_state=view_state, 
-        tooltip=True,
+        tooltip={
+            "text": "Number of schools: {elevationValue}"
+        },
         )        
     )
-    
-
-st.title('Ecoles en france ⬇️')
-expander_rayon = st.sidebar.beta_expander("Rayons Hexagones en metres")
-with expander_rayon:
-    """Le territoire est maillé en **hexagone ⬡**,\
-    toutes les écoles à l'intérieur d'un hexagones\
-     sont cumulés et donne la hauteur de la colonne ⬆️"""
-    radius = st.slider("Diamètre d'un ⬡ en mètres ", 100, 20000, 10000, 100) // 2
-
-expander_hauteur = st.sidebar.beta_expander("Hauteur")
-with expander_hauteur:
-    """Multiplication par un coeficient des hauteur des colonnes,\
-        pour un soucis de visibilitée ⬆️"""
-    hauteur = st.slider("Hauteur d'un  ⬡",1, 200, 100, 10)
-
-expander_transparence = st.sidebar.beta_expander("Transparence")
-with expander_transparence:
-    """Transparence des colonnes"""
-    opacity = st.slider('Transparence', 0.01, 1.0, 1.0, 0.01)
-
 
 if __name__ == '__main__':
-    data = load_data()
-    map(data)
+    
+    st.title('Ecoles en france ⬇️')
+    # SIDEBAR
+    expander_data = st.sidebar.beta_expander("Data")
+    with expander_data:
+        url = ''
+        school_name = st.radio(
+            'DataSet', 
+            ('All schools', 'Primary schools', 'Middle School', 'High school')
+        )
+        if school_name == 'All schools - (Toutes les écoles)':
+            url = ECOLES_DATA
+        elif school_name == 'Primary schools - (Écoles primaires)':
+            url = ECOLE_DATA
+        elif school_name == 'Middle School - (Collèges)':
+            url = COLLEGE_DATA
+        elif school_name == 'High school - (Lycées)':
+            url = LYCEE_DATA
+        
+        county = [str(c) for c in st.multiselect(
+            'County - (Département)',
+            range(1, 96)
+        )]
+        
+    expander_rayon = st.sidebar.beta_expander("Rayons Hexagones en metres")
+    with expander_rayon:
+        """Le territoire est maillé en **hexagone ⬡**,\
+        toutes les écoles à l'intérieur d'un hexagones\
+        sont cumulés et donne la hauteur de la colonne ⬆️"""
+        radius = st.slider("Diamètre d'un ⬡ en mètres ", 100, 20000, 10000, 100) // 2
+
+    expander_hauteur = st.sidebar.beta_expander("Hauteur")
+    with expander_hauteur:
+        """Multiplication par un coeficient des hauteur des colonnes,\
+            pour un soucis de visibilitée ⬆️"""
+        hauteur = st.slider("Hauteur d'un  ⬡",1, 200, 100, 10)
+
+    expander_transparence = st.sidebar.beta_expander("Transparence")
+    with expander_transparence:
+        """Transparence des colonnes"""
+        opacity = st.slider('Transparence', 0.01, 1.0, 1.0, 0.01)  
+
+    
+    f"""**Infos**: chaque colonne fait {radius*2}m de largeur !"""
+    if county:
+        df = load_data(url)
+        data = filter_data(df, county)
+        mapp(data)
+    else:
+        mapp(url)
+
