@@ -1,3 +1,7 @@
-data/
+jupyter/data/ecoles_par_departement/
+jupyter/data/contacts.csv
+jupyter/data/ecoles.csv
 .ipynb_checkpoints/
 jupyter/.ipynb_checkpoints
+mapbox_APIK
+jupyter/Analyse ecoles.ipynb

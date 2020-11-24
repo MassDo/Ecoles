@@ -85,4 +85,4 @@ with expander_transparence:
 
 if __name__ == '__main__':
     data = load_data()
-    map(DATA_URL)
+    map(data)
