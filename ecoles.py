@@ -5,7 +5,7 @@ import pandas as pd
 import pydeck as pdk
 
 #LOADING DATA
-# MAPBOX_KEY = os.environ.get('MAPBOX_KEY') # For prod, for dev no key are mendatory
+
 ECOLES_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/ecoles_data.csv'
 ECOLE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/ecole.csv'
 COLLEGE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/college.csv'
