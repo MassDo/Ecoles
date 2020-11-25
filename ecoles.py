@@ -72,7 +72,7 @@ if __name__ == '__main__':
         url = ''
         school_name = st.radio(
             'DataSet', 
-            ('All schools', 'Primary schools', 'Middle School', 'High school')
+            ('All schools - (Toutes les écoles)', 'Primary schools - (Écoles primaires)', 'Middle School - (Collèges)', 'High school - (Lycées)')
         )
         if school_name == 'All schools - (Toutes les écoles)':
             url = ECOLES_DATA
