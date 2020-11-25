@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run ecoles.py --server.headless=true --server.enableXsrfProtection=false
+web: sh setup.sh && streamlit run ecoles.py --server.headless=true 

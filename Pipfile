@@ -11,6 +11,7 @@ ipykernel = "*"
 numpy = "*"
 matplotlib = "*"
 streamlit = "==0.69"
+boto = "*"
 
 [requires]
 python_version = "3.8"
