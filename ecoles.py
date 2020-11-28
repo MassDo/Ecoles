@@ -25,7 +25,7 @@ lg = {
     "sidebar_data3": ["Collèges", 'Middle School'],
     "sidebar_data4": ["Lycées", 'High school'],
     "sidebar_county": ["Département", 'County'],
-    "sidebar_radius": ["Diamètre d'un ⬡", 'Diameter of ⬡'],
+    "sidebar_radius": ["Diamètre d'un ⬡ (mètres)", 'Diameter of ⬡ (meters)'],
     "sidebar_height": ["Hauteur", 'Height'],
     "sidebar_opacity": ["Transparence", 'Opacity'],
 }
@@ -90,8 +90,10 @@ if __name__ == '__main__':
             language = 1
         else:
             language = 0
+    video_file = open('video/demo.webm', 'rb')
+    video_bytes = video_file.read()
     with st.beta_expander(lg['demo'][language]):
-        pass
+        st.video(video_bytes)
     st.title(lg['title'][language])
     extruded_cb = st.checkbox(lg['dimension'][language])
     extruded = True
@@ -120,7 +122,7 @@ if __name__ == '__main__':
         )]
         
     with st.sidebar.beta_expander(lg['sidebar_radius'][language]):
-        radius = st.slider("Diamètre d'un ⬡ en mètres ", 100, 20000, 10000, 100) // 2
+        radius = st.slider("", 100, 20000, 10000, 100) // 2
 
     with st.sidebar.beta_expander(lg['sidebar_height'][language]):
         hauteur = st.slider("",1, 200, 100, 10)
