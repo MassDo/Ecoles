@@ -20,6 +20,7 @@ lg = {
     "dimension": ['Voir en 2D ?', 'See in 2D ?'],
     "legende_with": ["Largeur d'une cononne", 'Cell width'],
     "sidebar_data": ["Données", 'Data'],
+    "sidebar_data_raw": ["Voir les données brutes", 'See raw data'],
     "sidebar_data1": ["Toutes les écoles", 'All schools'],
     "sidebar_data2": ["Écoles primaires", 'Primary schools'],
     "sidebar_data3": ["Collèges", 'Middle School'],
@@ -103,6 +104,7 @@ if __name__ == '__main__':
     # SIDEBAR
     with st.sidebar.beta_expander(lg['sidebar_data'][language]):
         url = ''
+        f"""[{lg['sidebar_data_raw'][language]}](https://data.education.gouv.fr/explore/dataset/fr-en-annuaire-education/export/?disjunctive.nom_etablissement&disjunctive.type_etablissement&disjunctive.appartenance_education_prioritaire&disjunctive.type_contrat_prive&disjunctive.code_type_contrat_prive&disjunctive.pial)"""
         school_name = st.radio(
             '', 
             (lg['sidebar_data1'][language], lg['sidebar_data2'][language], lg['sidebar_data3'][language], lg['sidebar_data4'][language])
