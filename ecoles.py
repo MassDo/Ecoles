@@ -1,5 +1,6 @@
 """Une visualisation des écoles en france: Primaire et secondaire"""
 import os
+import time
 import streamlit as st
 import pandas as pd 
 import pydeck as pdk
@@ -10,7 +11,24 @@ ECOLES_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/da
 ECOLE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/ecole.csv'
 COLLEGE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/college.csv'
 LYCEE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/lycee.csv'
+start = 1
 
+lg = {    
+    "demo": ['Vidéo de démonstration', 'Demo video'],
+    "title":['Écoles en France ⬇️', 'Schools in France ⬇️'],
+    "lang":['Choisissez votre langue', 'Choose your language'],
+    "dimension": ['Voir en 2D ?', 'See in 2D ?'],
+    "legende_with": ["Largeur d'une cononne", 'Cell width'],
+    "sidebar_data": ["Données", 'Data'],
+    "sidebar_data1": ["Toutes les écoles", 'All schools'],
+    "sidebar_data2": ["Écoles primaires", 'Primary schools'],
+    "sidebar_data3": ["Collèges", 'Middle School'],
+    "sidebar_data4": ["Lycées", 'High school'],
+    "sidebar_county": ["Département", 'County'],
+    "sidebar_radius": ["Diamètre d'un ⬡", 'Diameter of ⬡'],
+    "sidebar_height": ["Hauteur", 'Height'],
+    "sidebar_opacity": ["Transparence", 'Opacity'],
+}
 @st.cache
 def load_data(url):
     df = pd.read_csv(url)
@@ -49,7 +67,7 @@ def mapp(data):
         elevation_scale=hauteur,
         pickable=True,
         elevation_range=[0, 2000],
-        extruded=True,
+        extruded=extruded,
         coverage=1,
         radius= radius,
         opacity=opacity
@@ -65,49 +83,53 @@ def mapp(data):
 
 if __name__ == '__main__':
     
-    st.title('Ecoles en france ⬇️')
+    # HEAD    
+    with st.beta_expander("Language"):
+        language = st.radio('',('En', 'Fr'))
+        if language == 'En':
+            language = 1
+        else:
+            language = 0
+    with st.beta_expander(lg['demo'][language]):
+        pass
+    st.title(lg['title'][language])
+    extruded_cb = st.checkbox(lg['dimension'][language])
+    extruded = True
+    if extruded_cb:
+        extruded = False
+                   
     # SIDEBAR
-    expander_data = st.sidebar.beta_expander("Data")
-    with expander_data:
+    with st.sidebar.beta_expander(lg['sidebar_data'][language]):
         url = ''
         school_name = st.radio(
-            'DataSet', 
-            ('All schools - (Toutes les écoles)', 'Primary schools - (Écoles primaires)', 'Middle School - (Collèges)', 'High school - (Lycées)')
+            '', 
+            (lg['sidebar_data1'][language], lg['sidebar_data2'][language], lg['sidebar_data3'][language], lg['sidebar_data4'][language])
         )
-        if school_name == 'All schools - (Toutes les écoles)':
+        if school_name == lg['sidebar_data1'][language]:
             url = ECOLES_DATA
-        elif school_name == 'Primary schools - (Écoles primaires)':
+        elif school_name == lg['sidebar_data2'][language]:
             url = ECOLE_DATA
-        elif school_name == 'Middle School - (Collèges)':
+        elif school_name == lg['sidebar_data3'][language]:
             url = COLLEGE_DATA
-        elif school_name == 'High school - (Lycées)':
+        elif school_name == lg['sidebar_data4'][language]:
             url = LYCEE_DATA
         
         county = [str(c) for c in st.multiselect(
-            'County - (Département)',
+            lg['sidebar_county'][language],
             range(1, 96)
         )]
         
-    expander_rayon = st.sidebar.beta_expander("Rayons Hexagones en metres")
-    with expander_rayon:
-        """Le territoire est maillé en **hexagone ⬡**,\
-        toutes les écoles à l'intérieur d'un hexagones\
-        sont cumulés et donne la hauteur de la colonne ⬆️"""
+    with st.sidebar.beta_expander(lg['sidebar_radius'][language]):
         radius = st.slider("Diamètre d'un ⬡ en mètres ", 100, 20000, 10000, 100) // 2
 
-    expander_hauteur = st.sidebar.beta_expander("Hauteur")
-    with expander_hauteur:
-        """Multiplication par un coeficient des hauteur des colonnes,\
-            pour un soucis de visibilitée ⬆️"""
-        hauteur = st.slider("Hauteur d'un  ⬡",1, 200, 100, 10)
+    with st.sidebar.beta_expander(lg['sidebar_height'][language]):
+        hauteur = st.slider("",1, 200, 100, 10)
 
-    expander_transparence = st.sidebar.beta_expander("Transparence")
-    with expander_transparence:
-        """Transparence des colonnes"""
-        opacity = st.slider('Transparence', 0.01, 1.0, 1.0, 0.01)  
+    with st.sidebar.beta_expander(lg['sidebar_opacity'][language]):
+        opacity = st.slider('', 0.01, 1.0, 1.0, 0.01)  
 
-    
-    f"""**Infos**: chaque colonne fait {radius*2}m de largeur !"""
+    # MAP
+    f"""{lg['sidebar_radius'][language]}: **{radius*2}m** - {lg['sidebar_data'][language]}: **{school_name}**"""
     if county:
         df = load_data(url)
         data = filter_data(df, county)
