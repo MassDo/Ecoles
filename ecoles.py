@@ -1,17 +1,14 @@
 """Une visualisation des écoles en france: Primaire et secondaire"""
-import os
-import time
 import streamlit as st
 import pandas as pd 
 import pydeck as pdk
 
-#LOADING DATA
-
+# DATA
 ECOLES_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/ecoles_data.csv'
 ECOLE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/ecole.csv'
 COLLEGE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/college.csv'
 LYCEE_DATA = 'https://raw.githubusercontent.com/MassDo/Ecoles/master/jupyter/data/lycee.csv'
-start = 1
+
 
 lg = {    
     "demo": ['Vidéo de démonstration', 'Demo video'],
@@ -84,21 +81,22 @@ def mapp(data):
 
 if __name__ == '__main__':
     
-    # HEAD    
+    # HEAD        
     with st.beta_expander("Language"):
-        language = st.radio('',('En', 'Fr'))
-        if language == 'En':
+        language = st.radio('',('English', 'Français'))
+        if language == 'English':
             language = 1
         else:
             language = 0
+    # Demo video
     video_file = open('video/demo.webm', 'rb')
     video_bytes = video_file.read()
     with st.beta_expander(lg['demo'][language]):
         st.video(video_bytes)
     st.title(lg['title'][language])
-    extruded_cb = st.checkbox(lg['dimension'][language])
+    # 2D button
     extruded = True
-    if extruded_cb:
+    if st.checkbox(lg['dimension'][language]):
         extruded = False
                    
     # SIDEBAR
@@ -132,7 +130,7 @@ if __name__ == '__main__':
     with st.sidebar.beta_expander(lg['sidebar_opacity'][language]):
         opacity = st.slider('', 0.01, 1.0, 1.0, 0.01)  
 
-    # MAP
+    # MAP DISPLAY
     f"""{lg['sidebar_radius'][language]}: **{radius*2}m** - {lg['sidebar_data'][language]}: **{school_name}**"""
     if county:
         df = load_data(url)
