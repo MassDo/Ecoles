@@ -26,6 +26,7 @@ lg = {
     "sidebar_radius": ["Diamètre d'un ⬡ (mètres)", 'Diameter of ⬡ (meters)'],
     "sidebar_height": ["Hauteur", 'Height'],
     "sidebar_opacity": ["Transparence", 'Opacity'],
+    "credit": ["Réalisée par [Dorian Massoulier](https://massdo.github.io/) avec [Streamlit](https://www.streamlit.io/)", "Made by [Dorian Massoulier](https://massdo.github.io/) with [Streamlit](https://www.streamlit.io/)"]
 }
 @st.cache
 def load_data(url):
@@ -138,4 +139,6 @@ if __name__ == '__main__':
         mapp(data)
     else:
         mapp(url)
+
+    f"""{lg['credit'][language]}"""
 
